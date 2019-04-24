@@ -15,6 +15,7 @@ jobs:
         - yarn lint
 
     - stage: publish docs
+      if: branch IN (master, develop)
       script:
         - yarn build-docs
       deploy:
@@ -24,9 +25,9 @@ jobs:
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
-          condition: $TRAVIS_BRANCH =~ ^master|develop$
 
     - stage: publish npm package
+      if: tag is present
       script:
         - yarn build-lib
       before_deploy:

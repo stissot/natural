@@ -4,17 +4,16 @@ node_js:
 
 cache: yarn
 
-script:
-  - yarn build-lib
-  - ./node_modules/.bin/ng test natural --progress false --watch=false --browsers ChromeHeadlessCustom
-  - ./node_modules/.bin/ng test demo --progress false --watch=false --browsers ChromeHeadlessCustom
-  - yarn build-docs
-  - yarn lint
-
 jobs:
   include:
-    - stage: publish docs
-      node_js: '10'
+    - stage: Test
+        - yarn build-lib
+        - ./node_modules/.bin/ng test natural --progress false --watch=false --browsers ChromeHeadlessCustom
+        - ./node_modules/.bin/ng test demo --progress false --watch=false --browsers ChromeHeadlessCustom
+        - yarn build-docs
+        - yarn lint
+
+    - stage: Publish docs
       script:
         - yarn build-docs
       deploy:
@@ -26,8 +25,7 @@ jobs:
           all_branches: true
           condition: $TRAVIS_BRANCH =~ ^master|develop$
 
-    - stage: publish npm package
-      node_js: '10'
+    - stage: Publish npm package
       script:
         - yarn build-lib
       before_deploy:

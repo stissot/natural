@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 10
+  - '10'
 
 cache: yarn
 
@@ -11,11 +11,32 @@ script:
   - yarn build-docs
   - yarn lint
 
-deploy:
-  provider: pages
-  skip-cleanup: true
-  local-dir: dist/demo
-  github-token: $GITHUB_TOKEN
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^master|develop$
+jobs:
+  include:
+    - stage: publish docs
+      node_js: '10'
+      script:
+        - yarn build-docs
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        local-dir: dist/demo
+        github-token: $GITHUB_TOKEN
+        on:
+          all_branches: true
+          condition: $TRAVIS_BRANCH =~ ^master|develop$
+
+    - stage: publish npm package
+      node_js: '10'
+      script:
+        - yarn build-lib
+      before_deploy:
+        - rm .gitignore
+        - cd dist/natural
+      deploy:
+        provider: npm
+        skip-cleanup: true
+        email: $NPM_API_EMAIL
+        api_key: $NPM_API_KEY
+        on:
+          tags: true

@@ -6,7 +6,7 @@ cache: yarn
 
 jobs:
   include:
-    - stage: Test
+    - stage: test
       script:
         - yarn build-lib
         - yarn build-docs
@@ -14,7 +14,7 @@ jobs:
         - ./node_modules/.bin/ng test demo --progress false --watch=false --browsers ChromeHeadlessCustom
         - yarn lint
 
-    - stage: Publish docs
+    - stage: publish docs
       script:
         - yarn build-docs
       deploy:
@@ -26,7 +26,7 @@ jobs:
           all_branches: true
           condition: $TRAVIS_BRANCH =~ ^master|develop$
 
-    - stage: Publish npm package
+    - stage: publish npm package
       script:
         - yarn build-lib
       before_deploy:
